@@ -16,90 +16,33 @@
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.android.tools.build:gradle:8.2.2'
     }
 }
 
-Properties localProperties = new Properties()
-localProperties.load(file('local.properties').newDataInputStream())
-
-String VERSION = '2.0.0'
-
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'maven-publish'
 
 repositories {
-    jcenter()
+    mavenCentral()
     google()
 }
 
 android {
 
-    compileSdkVersion 29
+    namespace 'com.duolingo.open.rtlviewpager'
+    compileSdkVersion 34
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 34
     }
 
 }
 
 dependencies {
-    compileOnly 'androidx.viewpager:viewpager:1.0.0'
-}
-
-bintray {
-    user = localProperties.getProperty('bintray.user')
-    key = localProperties.getProperty('bintray.key')
-    publications = ['releasePublication']
-    publish = false
-    pkg {
-        repo = 'maven'
-        name = 'com.duolingo.open:rtl-viewpager'
-        userOrg = 'duolingo'
-        issueTrackerUrl = 'https://github.com/duolingo/rtl-viewpager/issues'
-        vcsUrl = 'https://github.com/duolingo/rtl-viewpager.git'
-        licenses = ['Apache-2.0']
-        publicDownloadNumbers = true
-        version {
-            name = VERSION
-            vcsTag = 'v' + VERSION
-        }
-    }
-}
-
-publishing {
-    publications {
-        android.libraryVariants.all { variant ->
-            def sources = task "${variant.name}Sources"(type: Jar) {
-                variant.getSourceSets().each { sourceSet ->
-                    from sourceSet.getManifestFile()
-                    from sourceSet.getJavaDirectories()
-                }
-                classifier = 'sources'
-            }
-            "${variant.name}Publication"(MavenPublication) {
-                variant.getPackageLibraryProvider().get().outputs.files.each { output ->
-                    artifact output
-                }
-                artifact sources
-                groupId 'com.duolingo.open'
-                artifactId 'rtl-viewpager'
-                version VERSION
-                pom.withXml {
-                    def license = asNode().appendNode('licenses').appendNode('license')
-                    license.appendNode('name', 'Apache License, Version 2.0')
-                    license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0')
-                    license.appendNode('distribution', 'repo')
-                    asNode().appendNode('scm').appendNode('url', 'https://github.com/duolingo/rtl-viewpager')
-                }
-            }
-        }
-    }
+    compileOnly 'androidx.viewpager:viewpager:1.1.0'
 }
