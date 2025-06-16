@@ -25,6 +25,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
@@ -32,7 +33,6 @@ repositories {
 }
 
 android {
-
     namespace 'com.duolingo.open.rtlviewpager'
     compileSdkVersion 34
 
@@ -41,8 +41,27 @@ android {
         targetSdkVersion 34
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
     compileOnly 'androidx.viewpager:viewpager:1.1.0'
 }
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.naveensingh'
+            artifactId = 'rtl-viewpager'
+            version = project.version
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
+}
+
